@@ -36,7 +36,7 @@ export function paramsFor(login: string, index: number, total: number): CharPara
   const h = hashStr(login);
   const palette = TUBE_PALETTE[h % TUBE_PALETTE.length];
   const yPos = 195 + ((h >> 4) % 26);
-  const duration = 18 + ((h >> 8) % 11);
+  const duration = 30 + ((h >> 8) % 21);
   const bobDuration = 2.2 + (((h >> 12) % 9) / 10);
   const beginOffset = total > 0 ? -(duration * index / total) : 0;
   const bobPhase = ((h >> 16) % 2) === 0 ? 'up' : 'down';
