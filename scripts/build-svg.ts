@@ -64,6 +64,53 @@ function buildBackground(offset: number): string {
 <rect y="180" width="680" height="110" fill="#0c4a6e">${animFill(PALETTE.ocean, offset)}</rect>`;
 }
 
+function buildAmbient(offset: number): string {
+  return `
+<!-- seagull, right -> left, slow, fades out at night -->
+<g opacity="0.8">${animOpacity([0, 0.3, 0.9, 0.6, 0], offset)}
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+      values="720,70;-40,55;720,70" keyTimes="0;0.5;1" dur="120s" repeatCount="indefinite"/>
+    <path d="M-7,0 Q-4,-6 -1,-2 Q0,-3 1,-2 Q4,-6 7,0" stroke="#4b5563" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <animate attributeName="opacity" values="1;0;1" dur="0.6s" repeatCount="indefinite"/>
+    </path>
+    <path d="M-7,0 Q-4,-1 -1,1 Q0,0 1,1 Q4,-1 7,0" stroke="#4b5563" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <animate attributeName="opacity" values="0;1;0" dur="0.6s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</g>
+<!-- yellow duck, left -> right, very slow -->
+<g>
+  <animateTransform attributeName="transform" type="translate"
+    from="-30,232" to="720,232" dur="127s" begin="-29s" repeatCount="indefinite"/>
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+      values="0,-1;0,1;0,-1" dur="3.2s" repeatCount="indefinite"/>
+    <ellipse cx="0" cy="14" rx="11" ry="2" fill="#0c4a6e" opacity="0.25"/>
+    <ellipse cx="-8" cy="-1" rx="3.5" ry="3" fill="#fde047"/>
+    <ellipse cx="0" cy="0" rx="9" ry="5" fill="#fde047"/>
+    <circle cx="6" cy="-4" r="4" fill="#fde047"/>
+    <path d="M9,-4 L13,-3 L10,-2 Z" fill="#fb923c"/>
+    <circle cx="7" cy="-5" r="0.7" fill="#0c4a6e"/>
+  </g>
+</g>
+<!-- white duck, left -> right, even slower, offset start -->
+<g>
+  <animateTransform attributeName="transform" type="translate"
+    from="-30,246" to="720,246" dur="165s" begin="-86s" repeatCount="indefinite"/>
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+      values="0,-1;0,1;0,-1" dur="2.8s" repeatCount="indefinite"/>
+    <ellipse cx="0" cy="14" rx="12" ry="2" fill="#0c4a6e" opacity="0.25"/>
+    <ellipse cx="-9" cy="-1" rx="4" ry="3.5" fill="#f8fafc"/>
+    <ellipse cx="0" cy="0" rx="10" ry="5.5" fill="#f8fafc"/>
+    <circle cx="6" cy="-4" r="4.2" fill="#f8fafc"/>
+    <path d="M9,-4 L14,-3 L11,-2 Z" fill="#f97316"/>
+    <circle cx="7" cy="-5" r="0.7" fill="#1e293b"/>
+  </g>
+</g>`;
+}
+
 function buildBackWave(offset: number): string {
   return `<g>
   <animateTransform attributeName="transform" type="translate" values="0,0;-340,0" dur="18s" repeatCount="indefinite"/>
@@ -150,6 +197,7 @@ ${DEFS}
 ${buildBackground(offset)}
 ${buildBackWave(offset)}
 ${buildMidWave(offset)}
+${buildAmbient(offset)}
 ${characters}
 ${buildFrontWave(offset)}
 </svg>`;

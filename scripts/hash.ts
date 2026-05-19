@@ -18,12 +18,18 @@ export interface CharParams {
 }
 
 const TUBE_PALETTE = [
-  { main: '#f472b6', highlight: '#fbcfe8' },
-  { main: '#facc15', highlight: '#fef08a' },
-  { main: '#84cc16', highlight: '#bef264' },
-  { main: '#fb923c', highlight: '#fed7aa' },
-  { main: '#60a5fa', highlight: '#bfdbfe' },
-  { main: '#c084fc', highlight: '#e9d5ff' },
+  { main: '#f472b6', highlight: '#fbcfe8' }, // pink
+  { main: '#facc15', highlight: '#fef08a' }, // yellow
+  { main: '#84cc16', highlight: '#bef264' }, // lime
+  { main: '#fb923c', highlight: '#fed7aa' }, // orange
+  { main: '#60a5fa', highlight: '#bfdbfe' }, // blue
+  { main: '#c084fc', highlight: '#e9d5ff' }, // purple
+  { main: '#ef4444', highlight: '#fecaca' }, // red
+  { main: '#14b8a6', highlight: '#99f6e4' }, // teal
+  { main: '#22d3ee', highlight: '#a5f3fc' }, // cyan
+  { main: '#a78bfa', highlight: '#ddd6fe' }, // violet
+  { main: '#10b981', highlight: '#a7f3d0' }, // emerald
+  { main: '#fb7185', highlight: '#fecdd3' }, // rose
 ];
 
 export function paramsFor(login: string, index: number, total: number): CharParams {
