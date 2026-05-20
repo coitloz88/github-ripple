@@ -13,14 +13,14 @@ program
   .option('--output <path>', 'output path', 'ripple.svg')
   .option('--token <token>', 'GitHub token (env: GITHUB_TOKEN)')
   .option('--max <n>', 'max contributors', '20')
-  .option('--exclude-bots', 'exclude [bot] accounts', true)
+  .option('--exclude-bots', 'exclude [bot] accounts', false)
   .option('--no-exclude-bots', 'include [bot] accounts')
   .option('--pins <list>', 'comma-separated synthetic contributors (e.g. "claude=https://github.com/anthropics.png,jules")', '')
   .option('--timezone <tz>', 'IANA timezone (e.g. Asia/Seoul) used to set the starting phase of the day/night cycle', 'UTC');
 program.parse();
 const opts = program.opts();
 
-const CYCLE_DUR_SEC = 120;
+const CYCLE_DUR_SEC = 86400;
 
 function hoursInTz(tz: string): number {
   try {

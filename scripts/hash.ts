@@ -32,11 +32,29 @@ const TUBE_PALETTE = [
   { main: '#fb7185', highlight: '#fecdd3' }, // rose
 ];
 
+export type Vehicle = 'tube' | 'ufo';
+
+export function vehicleFor(login: string, isBot: boolean): Vehicle {
+  if (isBot) return 'ufo';
+  const h = hashStr(login + ':vehicle');
+  return (h % 15 === 0) ? 'ufo' : 'tube';
+}
+
+export function isUfoFlying(login: string): boolean {
+  const h = hashStr(login + ':flying');
+  return (h % 5 === 0);
+}
+
+export function ufoFlyingYPos(login: string): number {
+  const h = hashStr(login + ':flypos');
+  return 40 + (h % 80);
+}
+
 export function paramsFor(login: string, index: number, total: number): CharParams {
   const h = hashStr(login);
   const palette = TUBE_PALETTE[h % TUBE_PALETTE.length];
   const yPos = 195 + ((h >> 4) % 26);
-  const duration = 30 + ((h >> 8) % 21);
+  const duration = 35 + ((h >> 8) % 25);
   const bobDuration = 2.2 + (((h >> 12) % 9) / 10);
   const beginOffset = total > 0 ? -(duration * index / total) : 0;
   const bobPhase = ((h >> 16) % 2) === 0 ? 'up' : 'down';

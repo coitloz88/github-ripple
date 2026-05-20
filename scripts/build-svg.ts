@@ -1,5 +1,5 @@
 import type { Contributor } from './fetch-contributors.js';
-import { paramsFor } from './hash.js';
+import { paramsFor, vehicleFor, isUfoFlying, ufoFlyingYPos } from './hash.js';
 
 export interface ContributorWithAvatar extends Contributor {
   avatarDataUri: string;
@@ -136,6 +136,9 @@ const DEFS = `<defs>
   <clipPath id="ac">
     <circle cx="0" cy="-14" r="15"/>
   </clipPath>
+  <clipPath id="dc">
+    <path d="M-13,-5 Q-13,-28 0,-28 Q13,-28 13,-5 Z"/>
+  </clipPath>
 </defs>`;
 
 const EMPTY_OCEAN = `<text x="340" y="140" font-family="monospace" font-size="12" fill="#ffffff" text-anchor="middle" stroke="#0c4a6e" stroke-width="3" paint-order="stroke">no contributors yet</text>`;
@@ -153,11 +156,9 @@ function escapeXml(s: string): string {
   });
 }
 
-function buildCharacterGroup(c: ContributorWithAvatar, i: number, total: number, offset: number): string {
+function buildTubeGroup(c: ContributorWithAvatar, i: number, total: number, offset: number): string {
   const p = paramsFor(c.login, i, total);
-  const bobValues = p.bobPhase === 'up'
-    ? '0,-3;0,3;0,-3'
-    : '0,3;0,-3;0,3';
+  const bobValues = p.bobPhase === 'up' ? '0,-3;0,3;0,-3' : '0,3;0,-3;0,3';
   const login = escapeXml(c.login);
 
   return `<g>
@@ -167,7 +168,7 @@ function buildCharacterGroup(c: ContributorWithAvatar, i: number, total: number,
   <g>
     <animateTransform attributeName="transform" type="translate"
       values="${bobValues}" dur="${p.bobDuration.toFixed(2)}s" repeatCount="indefinite"/>
-    <ellipse cx="0" cy="14" rx="24" ry="3" fill="#0c4a6e" opacity="0.3"/>
+    <ellipse cx="0" cy="11" rx="24" ry="3" fill="#0c4a6e" opacity="0.3"/>
     <ellipse cx="0" cy="2" rx="24" ry="8" fill="${p.tubeColor}"/>
     <rect x="-3" y="-5" width="6" height="3" fill="${p.tubeHighlight}"/>
     <rect x="-20" y="-1" width="3" height="4" fill="${p.tubeHighlight}"/>
@@ -182,6 +183,77 @@ function buildCharacterGroup(c: ContributorWithAvatar, i: number, total: number,
 </g>`;
 }
 
+function buildUfoGroup(c: ContributorWithAvatar, i: number, total: number, isBot: boolean): string {
+  const p = paramsFor(c.login, i, total);
+  const flying = isUfoFlying(c.login);
+  const yPos = flying ? ufoFlyingYPos(c.login) : p.yPos;
+  const dur = flying ? Math.round(p.duration * 0.65) : p.duration;
+  const beginOffset = total > 0 ? -(dur * i / total) : 0;
+  const login = escapeXml(c.login);
+  const wrapAttrs = isBot
+    ? 'shape-rendering="geometricPrecision" transform="scale(0.7)"'
+    : 'shape-rendering="geometricPrecision"';
+
+  const shadow = flying
+    ? ''
+    : '\n  <ellipse cx="0" cy="11" rx="27" ry="3" fill="#0c4a6e" opacity="0.15"/>';
+
+  const trail = flying ? `
+          <rect x="-42" y="-26" width="9" height="3" fill="#c7d2fe" opacity="0.7"/>
+          <rect x="-57" y="-23" width="6" height="3" fill="#c7d2fe" opacity="0.4"/>
+          <rect x="-69" y="-29" width="6" height="3" fill="#c7d2fe" opacity="0.15"/>` : '';
+
+  return `<g>
+  <animateTransform attributeName="transform" type="translate"
+    from="-60,${yPos}" to="740,${yPos}"
+    dur="${dur}s" begin="${beginOffset.toFixed(2)}s" repeatCount="indefinite"/>
+  <g ${wrapAttrs}>${shadow}
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+        values="0,-2;0,2;0,-2" dur="1.5s" repeatCount="indefinite"/>
+      <g>
+        <animateTransform attributeName="transform" type="translate"
+          values="-2,0;2,0;-2,0" dur="1.2s" repeatCount="indefinite"/>
+        <g transform="translate(0,-15)">${trail}
+          <ellipse cx="0" cy="-2" rx="30" ry="8" fill="#a78bfa" opacity="0.2"/>
+          <ellipse cx="0" cy="0" rx="27" ry="6" fill="#94a3b8"/>
+          <ellipse cx="0" cy="-3" rx="22" ry="5" fill="#cbd5e1"/>
+          <path d="M-13,-5 Q-13,-28 0,-28 Q13,-28 13,-5 Z" fill="#7dd3fc" opacity="0.85"/>
+          <path d="M-9,-5 Q-9,-22 0,-22 Q9,-22 9,-5 Z" fill="#bae6fd" opacity="0.4"/>
+          <image href="${c.avatarDataUri}" x="-10" y="-28" width="20" height="22" clip-path="url(#dc)"/>
+          <circle cx="-18" cy="0" r="2.5" fill="#fbbf24">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" begin="0s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="-9" cy="2" r="2.5" fill="#f472b6">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" begin="0.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="0" cy="3" r="2.5" fill="#34d399">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" begin="0.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="9" cy="2" r="2.5" fill="#60a5fa">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" begin="0.6s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="18" cy="0" r="2.5" fill="#fbbf24">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.8s" begin="0.2s" repeatCount="indefinite"/>
+          </circle>
+          <polygon points="-5,3 5,3 12,22 -12,22" fill="#fde68a" opacity="0.3"/>
+          <text y="35" font-family="monospace" font-size="11" font-weight="bold"
+            fill="#ffffff" text-anchor="middle"
+            stroke="#0c4a6e" stroke-width="3" paint-order="stroke">@${login}</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</g>`;
+}
+
+function buildCharacterGroup(c: ContributorWithAvatar, i: number, total: number, offset: number): string {
+  const isBot = c.login.endsWith('[bot]');
+  const vehicle = vehicleFor(c.login, isBot);
+  if (vehicle === 'ufo') return buildUfoGroup(c, i, total, isBot);
+  return buildTubeGroup(c, i, total, offset);
+}
+
 export function buildSvg(contributors: ContributorWithAvatar[], opts: BuildOpts): string {
   const offset = opts.cycleOffsetSec;
   const characters = contributors.length > 0
@@ -190,7 +262,7 @@ export function buildSvg(contributors: ContributorWithAvatar[], opts: BuildOpts)
         .join('\n')
     : EMPTY_OCEAN;
 
-  return `<svg width="100%" viewBox="0 0 680 290" xmlns="http://www.w3.org/2000/svg" role="img">
+  return `<svg width="100%" viewBox="0 0 680 290" xmlns="http://www.w3.org/2000/svg" role="img" shape-rendering="crispEdges">
 <title>Contributors</title>
 <desc>Floating contributors on a wavy ocean cycling through day and night</desc>
 ${DEFS}

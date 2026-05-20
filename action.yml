@@ -12,8 +12,8 @@ inputs:
     description: 'Max contributors shown'
     default: '20'
   exclude-bots:
-    description: 'Exclude [bot] accounts'
-    default: 'true'
+    description: 'Exclude [bot] accounts (default false — bots appear as UFOs)'
+    default: 'false'
   pins:
     description: 'Comma-separated synthetic contributors. Format: "login" or "login=avatar-url" (e.g. "claude=https://github.com/anthropics.png,jules")'
     default: ''
