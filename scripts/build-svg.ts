@@ -86,7 +86,7 @@ function buildAmbient(offset: number): string {
   <g>
     <animateTransform attributeName="transform" type="translate"
       values="0,-1;0,1;0,-1" dur="3.2s" repeatCount="indefinite"/>
-    <ellipse cx="0" cy="14" rx="11" ry="2" fill="#0c4a6e" opacity="0.25"/>
+    <ellipse cx="0" cy="7" rx="11" ry="2" fill="#0c4a6e" opacity="0.25"/>
     <ellipse cx="-8" cy="-1" rx="3.5" ry="3" fill="#fde047"/>
     <ellipse cx="0" cy="0" rx="9" ry="5" fill="#fde047"/>
     <circle cx="6" cy="-4" r="4" fill="#fde047"/>
@@ -101,7 +101,7 @@ function buildAmbient(offset: number): string {
   <g>
     <animateTransform attributeName="transform" type="translate"
       values="0,-1;0,1;0,-1" dur="2.8s" repeatCount="indefinite"/>
-    <ellipse cx="0" cy="14" rx="12" ry="2" fill="#0c4a6e" opacity="0.25"/>
+    <ellipse cx="0" cy="7" rx="12" ry="2" fill="#0c4a6e" opacity="0.25"/>
     <ellipse cx="-9" cy="-1" rx="4" ry="3.5" fill="#f8fafc"/>
     <ellipse cx="0" cy="0" rx="10" ry="5.5" fill="#f8fafc"/>
     <circle cx="6" cy="-4" r="4.2" fill="#f8fafc"/>
