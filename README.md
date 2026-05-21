@@ -16,8 +16,10 @@ Add this workflow to your repo at `.github/workflows/ripple.yml`:
 name: Ripple
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 0 * * 0'
   workflow_dispatch:
+  push:
+    branches: [master, main]
 
 permissions:
   contents: write
@@ -52,12 +54,9 @@ Then embed in your `README.md`:
 | `max-contributors` | `20` | Max contributors shown, sorted by contribution count |
 | `exclude-bots` | `false` | Skip accounts whose login ends with `[bot]`. By default bots are included — they appear as UFOs. |
 | `pins` | `''` | Comma-separated synthetic contributors. Format: `login` or `login=avatar-url`. E.g. `claude=https://github.com/anthropics.png,jules` |
-| `timezone` | `UTC` | IANA timezone (e.g. `Asia/Seoul`) used to set the starting phase of the day/night cycle |
 | `token` | `${{ github.token }}` | GitHub token used for the API call |
 
-The scene cycles through night → dawn → day → sunset → night over 24 hours. At generation time, the action computes the current hour-of-day in the given `timezone` and bakes a matching `begin` offset into every SMIL animation. So when a viewer loads the README, the scene starts at whatever phase corresponds to your local time *at that moment of generation*, then keeps cycling on its own.
-
-Note: GitHub renders SVGs via `<img>`, which has no access to the viewer's clock. The cycle is a fixed 24-hour loop — it's not live local time, just a continuously-changing scene that started at the right phase. Running the workflow hourly keeps it in sync.
+The scene cycles through night → dawn → day → sunset → night continuously. The SVG is only committed when the contributor list actually changes, so the workflow runs weekly without generating noise commits.
 
 Pinned contributors are always rendered (even if no commits in the repo) and dedupe against real contributors by login. Use this to add mascots, AI assistants you collaborate with, or any persona you want floating in your ocean.
 
