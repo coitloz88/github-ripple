@@ -15,38 +15,11 @@ program
   .option('--max <n>', 'max contributors', '20')
   .option('--exclude-bots', 'exclude [bot] accounts', false)
   .option('--no-exclude-bots', 'include [bot] accounts')
-  .option('--pins <list>', 'comma-separated synthetic contributors (e.g. "claude=https://github.com/anthropics.png,jules")', '')
-  .option('--timezone <tz>', 'IANA timezone (e.g. Asia/Seoul) used to set the starting phase of the day/night cycle', 'UTC');
+  .option('--pins <list>', 'comma-separated synthetic contributors (e.g. "claude=https://github.com/anthropics.png,jules")', '');
 program.parse();
 const opts = program.opts();
 
-const CYCLE_DUR_SEC = 86400;
-
-function hoursInTz(tz: string): number {
-  try {
-    const fmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
-    const parts = fmt.formatToParts(new Date());
-    let h = Number(parts.find(p => p.type === 'hour')!.value);
-    const m = Number(parts.find(p => p.type === 'minute')!.value);
-    const s = Number(parts.find(p => p.type === 'second')!.value);
-    if (h === 24) h = 0;
-    return h + m / 60 + s / 3600;
-  } catch {
-    console.warn(`Invalid timezone "${tz}", falling back to UTC`);
-    const now = new Date();
-    return now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
-  }
-}
-
-const hours = hoursInTz(opts.timezone);
-// Phase mapping: 0h → night start, 6h → dawn, 12h → day, 18h → sunset, 24h → night
-const cycleOffsetSec = (hours / 24) * CYCLE_DUR_SEC;
+const cycleOffsetSec = 0;
 
 const token = opts.token ?? process.env.GITHUB_TOKEN ?? process.env.TOKEN;
 
@@ -96,7 +69,7 @@ const withAvatars = await Promise.all(
 
 const svg = buildSvg(withAvatars, { cycleOffsetSec });
 
-console.log(`🕐 cycle phase: ${hours.toFixed(2)}h in ${opts.timezone} → begin="-${cycleOffsetSec.toFixed(1)}s" of ${CYCLE_DUR_SEC}s cycle`);
+console.log(`🌊 generating SVG for ${withAvatars.length} contributors`);
 
 const outDir = dirname(opts.output);
 if (outDir && outDir !== '.' && !existsSync(outDir)) {
